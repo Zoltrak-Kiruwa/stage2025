@@ -1,0 +1,33 @@
+étayer l'intro, et la théorie (développer les calculs).
+
+Chi2 = 9.76
+Nombre de degrés de liberté = 20
+Chi2 réduit = 0.49
+Paramètres estimés :
+Ωm = 0.340 ± 0.059
+σ8,0 = 0.761 ± 0.033
+w = -1.000 ± 0.569              w mauvais
+
+om_min = 0
+om_max = 0.5
+sig8_min = 0
+sig8_max = 4
+w_min = -1
+w_max = -1/3
+
+
+Chi2 = 7.28
+Nombre de degrés de liberté = 20
+Chi2 réduit = 0.36
+Paramètres estimés :
+Ωm = 0.151 ± 0.548
+σ8,0 = 1.414 ± 2.696
+w = -0.144 ± 0.688                     on relache tout  
+
+om_min = 0
+om_max = 1
+sig8_min = 0
+sig8_max = 4
+w_min = -3
+w_max = 3
+ 
