@@ -12,7 +12,7 @@ import pandas as pd
 import time 
 from scipy.interpolate import interp1d
 import math
-import library
+from joblib import Parallel, delayed
 
 
 def make_ds(name,position):                            #cette fonction fabrique une liste rempli par les données de la colonne de données voulue
@@ -82,12 +82,7 @@ fsig8_err_minus = np.array((df['fsig8_err_minus'].copy()).tolist())
 fsig8_err_plus = np.array((df['fsig8_err_plus'].copy()).tolist())
 
 
-# Importation des données
-df = pd.read_csv("fsigma8_data.dat", sep=";")
-z_data = np.array(df['z'].tolist())
-fsig8 = np.array(df['fsig8'].tolist())
-fsig8_err_minus = np.array(df['fsig8_err_minus'].tolist())
-fsig8_err_plus = np.array(df['fsig8_err_plus'].tolist())
+
 
 def gamma(w,omega_m0,z):
     return   (3*(w-1))/(6*w-5) #- ((15/2057)*np.log(omega_m(z,omega_m0,w)))
@@ -118,42 +113,41 @@ def Chi2RSD(omega_m0, sigma8_0, w):
 
     return np.sum(chi2_terms)
 
-def f(z,H0,omega_m0):
+def f(z,H0,omega_m,w):
 
-    a  = (H0*np.sqrt(omega_m0*math.pow(1+z,3)+(1-omega_m0)))
+    a  = (H0*np.sqrt(omega_m*math.pow((1+z),3)+(1-omega_m)*(math.pow((1+z),3*(1+w)))))
     if a == 0:
         print("a = ",0)
     return 1/a
 
-def Mu(z,H0,omega_m0):
+def Mu(z,H0,omega_m,w):
     
     #print(type(X))
 
     # Calculer l'intégrale numérique de la fonction f(x) en utilisant la méthode des trapèzes
-    I,err = quad(f,0,z,args = (H0,omega_m0))
+    I,err = quad(f,0,z,args = (H0,omega_m,w))
     return 5*np.log10(((1+z)*c*I*(10**5)))
 
-
-def Chi2Panth(H0,omega_m0,M):
+def Chi2Panth(H0,omega_m,w,M):
     
     chi2 = 0
     diffMu = np.array([])
-    #M = -19.25
+
     for i in range(0,len(Zhd)):
         if IS_calib[i] == 0:
-            diffMu = np.append(diffMu,Mu(Zhd[i],H0,omega_m0)-(mb_corr[i]-M))
+            diffMu = np.append(diffMu,Mu(Zhd[i],H0,omega_m,w)-(mb_corr[i]-M))
         else:
             diffMu =  np.append(diffMu,(mb_corr[i]-M)-ceph_dist[i])
-        
+    
     return np.dot(np.dot(Cov1,diffMu),diffMu)
 
 def Chi2(H0,omega_m0,M,sigma8_0,w):
     
     #start = time.time()
-    res = Chi2RSD(omega_m0,sigma8_0,w)+Chi2Panth(H0,omega_m0,M)
+    res = Chi2RSD(omega_m0,sigma8_0,w)+Chi2Panth(H0,omega_m0,w,M)
     #end = time.time()
     #print("t = ",end-start,"s")
-    #print("H0 = ",H0,"omega_m = ",omega_m0,"sig8_0",sigma8_0,"M =",M)
+    #print("H0 = ",H0,"omega_m = ",omega_m0,"sig8_0",sigma8_0,"M =",M,"w = ",w)
     return res
 
 
@@ -161,30 +155,57 @@ def Chi2(H0,omega_m0,M,sigma8_0,w):
 #########################################################################################################
 
 
-   
+def compute_chi2_om_sig8(om, sig8, h0, m, w_min, w_max, Chi2):
+    minimizer = Minuit(Chi2, H0=h0, omega_m0=om, M=m, sigma8_0=sig8, w=-1)
+    minimizer.fixed["omega_m0"] = True
+    minimizer.fixed["sigma8_0"] = True
+    minimizer.fixed["H0"] = True
+    minimizer.fixed["M"] = True
+    minimizer.limits["w"] = (w_min, w_max)
+    minimizer.migrad()
+    return minimizer.fval
 
+def compute_chi2_om_w(om, w, h0, m, sig8_min, sig8_max, Chi2):
+    minimizer = Minuit(Chi2, H0=h0, omega_m0=om, M=m, sigma8_0=0.7, w=w)
+    minimizer.fixed["omega_m0"] = True
+    minimizer.fixed["w"] = True
+    minimizer.fixed["H0"] = True
+    minimizer.fixed["M"] = True
+    minimizer.limits["sigma8_0"] = (sig8_min, sig8_max)
+    minimizer.migrad()
+    return minimizer.fval
 
-def compute_grid_Chi2(omega_vals, sigma_vals, w_vals, om_best, sig8_best, w_best):
-    # Ωm0 vs σ8 (w fixé)
-    OM, Sig8 = np.meshgrid(omega_vals, sigma_vals, indexing='ij')
-    chi2_grid_om_sig8 = np.vectorize(lambda om, sig8: Chi2(om, sig8, w_best))(OM, Sig8)
+def compute_chi2_sig8_w(sig8, w, h0, m, om_min, om_max, Chi2):
+    minimizer = Minuit(Chi2, H0=h0, omega_m0=0.3, M=m, sigma8_0=sig8, w=w)
+    minimizer.fixed["sigma8_0"] = True
+    minimizer.fixed["w"] = True
+    minimizer.fixed["H0"] = True
+    minimizer.fixed["M"] = True
+    minimizer.limits["omega_m0"] = (om_min, om_max)
+    minimizer.migrad()
+    return minimizer.fval
 
-    # Ωm0 vs w (σ8 fixé)
-    OM, W = np.meshgrid(omega_vals, w_vals, indexing='ij')
-    chi2_grid_om_w = np.vectorize(lambda om, w: Chi2(om, sig8_best,w))(OM, W)
+def compute_grid_Chi2(om_vals, sig8_vals,w_vals,w_min,w_max,sig8_min,sig8_max, om_min, om_max):
+    h0 = 73.4
+    m = -19.25
 
-    # σ8 vs w (Ωm0 fixé)
-    Sig8, W = np.meshgrid(sigma_vals, w_vals, indexing='ij')
-    chi2_grid_sig8_w = np.vectorize(lambda sig8, w: Chi2(om_best, sig8, w))(Sig8, W)
+    # Parallel calls
+    chi2_om_sig8 = Parallel(n_jobs=-1)(delayed(compute_chi2_om_sig8)(om, sig8, h0, m, w_min, w_max, Chi2) for om in om_vals for sig8 in sig8_vals)
+    
+    chi2_grid_om_sig8 = np.array(chi2_om_sig8).reshape(len(om_vals), len(sig8_vals))
+
+    chi2_om_w = Parallel(n_jobs=-1)(delayed(compute_chi2_om_w)(om, w, h0, m, sig8_min, sig8_max, Chi2) for om in om_vals for w in w_vals)
+
+    chi2_grid_om_w = np.array(chi2_om_w).reshape(len(om_vals), len(w_vals))
+
+    chi2_sig8_w = Parallel(n_jobs=-1)(delayed(compute_chi2_sig8_w)(sig8, w, h0, m, om_min, om_max, Chi2) for sig8 in sig8_vals for w in w_vals)
+
+    chi2_grid_sig8_w = np.array(chi2_sig8_w).reshape(len(sig8_vals), len(w_vals))
 
     return chi2_grid_om_sig8, chi2_grid_om_w, chi2_grid_sig8_w
-
-def compute_grid_Chi2_ms(omega_vals, sigma_vals, w_vals, om_best, sig8_best, w_best):
-    # Ωm0 vs σ8 (w fixé)
-    OM, Sig8 = np.meshgrid(omega_vals, sigma_vals, indexing='ij')
-    chi2_grid_om_sig8 = np.vectorize(lambda om, sig8: Chi2(om, sig8, w_best))(OM, Sig8)
     
-    return chi2_grid_om_sig8
+   
+
 
 ########################################
 
