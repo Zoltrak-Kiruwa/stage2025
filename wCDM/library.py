@@ -13,7 +13,7 @@ import time
 from scipy.interpolate import interp1d
 import math
 from joblib import Parallel, delayed
-
+import os
 
 def make_ds(name,position):                            #cette fonction fabrique une liste rempli par les données de la colonne de données voulue
     
@@ -185,26 +185,25 @@ def compute_chi2_sig8_w(sig8, w, h0, m, om_min, om_max, Chi2):
     minimizer.migrad()
     return minimizer.fval
 
-def compute_grid_Chi2(om_vals, sig8_vals,w_vals,w_min,w_max,sig8_min,sig8_max, om_min, om_max):
+
+def compute_grid_Chi2(om_vals, sig8_vals, w_vals, w_min, w_max, sig8_min, sig8_max, om_min, om_max):
     h0 = 73.4
     m = -19.25
 
-    # Parallel calls
-    chi2_om_sig8 = Parallel(n_jobs=-1)(delayed(compute_chi2_om_sig8)(om, sig8, h0, m, w_min, w_max, Chi2) for om in om_vals for sig8 in sig8_vals)
-    
+    print(f"🧠 Nombre de cœurs disponibles : {os.cpu_count()} (utilisés : tous)")
+
+    chi2_om_sig8 = Parallel(n_jobs=-1)(
+        delayed(compute_chi2_om_sig8)(om, sig8, h0, m, w_min, w_max, Chi2)for om in om_vals for sig8 in sig8_vals)
     chi2_grid_om_sig8 = np.array(chi2_om_sig8).reshape(len(om_vals), len(sig8_vals))
 
-    chi2_om_w = Parallel(n_jobs=-1)(delayed(compute_chi2_om_w)(om, w, h0, m, sig8_min, sig8_max, Chi2) for om in om_vals for w in w_vals)
-
+    chi2_om_w = Parallel(n_jobs=-1)(delayed(compute_chi2_om_w)(om, w, h0, m, sig8_min, sig8_max, Chi2)for om in om_vals for w in w_vals)
     chi2_grid_om_w = np.array(chi2_om_w).reshape(len(om_vals), len(w_vals))
 
-    chi2_sig8_w = Parallel(n_jobs=-1)(delayed(compute_chi2_sig8_w)(sig8, w, h0, m, om_min, om_max, Chi2) for sig8 in sig8_vals for w in w_vals)
-
+    chi2_sig8_w = Parallel(n_jobs=-1)(delayed(compute_chi2_sig8_w)(sig8, w, h0, m, om_min, om_max, Chi2)for sig8 in sig8_vals for w in w_vals)
     chi2_grid_sig8_w = np.array(chi2_sig8_w).reshape(len(sig8_vals), len(w_vals))
 
     return chi2_grid_om_sig8, chi2_grid_om_w, chi2_grid_sig8_w
-    
-   
+
 
 
 ########################################
