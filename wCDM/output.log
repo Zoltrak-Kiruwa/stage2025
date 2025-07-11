@@ -1,0 +1,133 @@
+nohup: ignoring input
+┌─────────────────────────────────────────────────────────────────────────┐
+│                                Migrad                                   │
+├──────────────────────────────────┬──────────────────────────────────────┤
+│ FCN = 1533                       │              Nfcn = 71               │
+│ EDM = 7.1e-05 (Goal: 0.0002)     │           time = 13.3 sec            │
+├──────────────────────────────────┼──────────────────────────────────────┤
+│          Valid Minimum           │   Below EDM threshold (goal x 10)    │
+├──────────────────────────────────┼──────────────────────────────────────┤
+│      No parameters at limit      │           Below call limit           │
+├──────────────────────────────────┼──────────────────────────────────────┤
+│             Hesse ok             │         Covariance accurate          │
+└──────────────────────────────────┴──────────────────────────────────────┘
+┌───┬──────────┬───────────┬───────────┬────────────┬────────────┬─────────┬─────────┬───────┐
+│   │ Name     │   Value   │ Hesse Err │ Minos Err- │ Minos Err+ │ Limit-  │ Limit+  │ Fixed │
+├───┼──────────┼───────────┼───────────┼────────────┼────────────┼─────────┼─────────┼───────┤
+│ 0 │ H0       │   73.4    │    0.7    │            │            │         │         │  yes  │
+│ 1 │ omega_m0 │   0.31    │   0.04    │            │            │   0.2   │   0.6   │       │
+│ 2 │ M        │  -19.25   │   0.19    │            │            │         │         │  yes  │
+│ 3 │ sigma8_0 │   0.78    │   0.04    │            │            │   0.2   │    1    │       │
+│ 4 │ w        │   -0.95   │   0.08    │            │            │   -2    │-0.333333│       │
+└───┴──────────┴───────────┴───────────┴────────────┴────────────┴─────────┴─────────┴───────┘
+┌──────────┬──────────────────────────────────────────────┐
+│          │       H0 omega_m0        M sigma8_0        w │
+├──────────┼──────────────────────────────────────────────┤
+│       H0 │        0   0.0000        0   0.0000    0.000 │
+│ omega_m0 │   0.0000  0.00168   0.0000  -0.0016  -0.0033 │
+│        M │        0   0.0000        0   0.0000    0.000 │
+│ sigma8_0 │   0.0000  -0.0016   0.0000  0.00173   0.0031 │
+│        w │    0.000  -0.0033    0.000   0.0031    0.007 │
+└──────────┴──────────────────────────────────────────────┘
+Début du calcul des grilles χ²...
+🧠 Cœurs utilisés : 16
+Calcul chi2(Ωm, σ8):   0%|          | 0/10000 [00:00<?, ?it/s]Calcul chi2(Ωm, σ8):   0%|          | 16/10000 [00:00<02:53, 57.65it/s]Calcul chi2(Ωm, σ8):   0%|          | 32/10000 [00:07<45:51,  3.62it/s]Calcul chi2(Ωm, σ8):   0%|          | 48/10000 [00:10<40:16,  4.12it/s]Calcul chi2(Ωm, σ8):   1%|          | 64/10000 [00:13<36:50,  4.49it/s]Calcul chi2(Ωm, σ8):   1%|          | 80/10000 [00:16<34:53,  4.74it/s]Calcul chi2(Ωm, σ8):   1%|          | 96/10000 [00:19<33:38,  4.91it/s]Calcul chi2(Ωm, σ8):   1%|          | 112/10000 [00:23<33:11,  4.96it/s]Calcul chi2(Ωm, σ8):   1%|▏         | 128/10000 [00:26<32:27,  5.07it/s]Calcul chi2(Ωm, σ8):   1%|▏         | 144/10000 [00:29<31:59,  5.13it/s]Calcul chi2(Ωm, σ8):   2%|▏         | 160/10000 [00:32<31:38,  5.18it/s]Calcul chi2(Ωm, σ8):   2%|▏         | 176/10000 [00:35<31:22,  5.22it/s]Calcul chi2(Ωm, σ8):   2%|▏         | 192/10000 [00:38<31:24,  5.20it/s]Calcul chi2(Ωm, σ8):   2%|▏         | 208/10000 [00:41<31:46,  5.14it/s]Calcul chi2(Ωm, σ8):   2%|▏         | 224/10000 [00:44<31:32,  5.16it/s]Calcul chi2(Ωm, σ8):   2%|▏         | 240/10000 [00:47<31:22,  5.18it/s]Calcul chi2(Ωm, σ8):   3%|▎         | 256/10000 [00:50<31:14,  5.20it/s]Calcul chi2(Ωm, σ8):   3%|▎         | 272/10000 [00:53<31:07,  5.21it/s]Calcul chi2(Ωm, σ8):   3%|▎         | 288/10000 [00:56<31:09,  5.19it/s]Calcul chi2(Ωm, σ8):   3%|▎         | 304/10000 [00:59<30:57,  5.22it/s]Calcul chi2(Ωm, σ8):   3%|▎         | 320/10000 [01:02<30:49,  5.23it/s]Calcul chi2(Ωm, σ8):   3%|▎         | 336/10000 [01:05<30:46,  5.23it/s]Calcul chi2(Ωm, σ8):   4%|▎         | 352/10000 [01:08<30:10,  5.33it/s]Calcul chi2(Ωm, σ8):   4%|▎         | 368/10000 [01:11<29:49,  5.38it/s]Calcul chi2(Ωm, σ8):   4%|▍         | 384/10000 [01:14<30:01,  5.34it/s]Calcul chi2(Ωm, σ8):   4%|▍         | 400/10000 [01:18<30:32,  5.24it/s]Calcul chi2(Ωm, σ8):   4%|▍         | 416/10000 [01:21<31:14,  5.11it/s]Calcul chi2(Ωm, σ8):   4%|▍         | 432/10000 [01:24<31:02,  5.14it/s]Calcul chi2(Ωm, σ8):   4%|▍         | 448/10000 [01:27<30:19,  5.25it/s]Calcul chi2(Ωm, σ8):   5%|▍         | 464/10000 [01:30<29:56,  5.31it/s]Calcul chi2(Ωm, σ8):   5%|▍         | 480/10000 [01:33<29:27,  5.38it/s]Calcul chi2(Ωm, σ8):   5%|▍         | 496/10000 [01:36<29:40,  5.34it/s]Calcul chi2(Ωm, σ8):   5%|▌         | 512/10000 [01:39<29:50,  5.30it/s]Calcul chi2(Ωm, σ8):   5%|▌         | 528/10000 [01:42<29:56,  5.27it/s]Calcul chi2(Ωm, σ8):   5%|▌         | 544/10000 [01:45<29:28,  5.35it/s]Calcul chi2(Ωm, σ8):   6%|▌         | 560/10000 [01:48<29:09,  5.39it/s]Calcul chi2(Ωm, σ8):   6%|▌         | 576/10000 [01:51<29:07,  5.39it/s]Calcul chi2(Ωm, σ8):   6%|▌         | 592/10000 [01:54<29:04,  5.39it/s]Calcul chi2(Ωm, σ8):   6%|▌         | 608/10000 [01:57<30:27,  5.14it/s]Calcul chi2(Ωm, σ8):   6%|▌         | 624/10000 [02:00<30:05,  5.19it/s]Calcul chi2(Ωm, σ8):   6%|▋         | 640/10000 [02:03<29:22,  5.31it/s]Calcul chi2(Ωm, σ8):   7%|▋         | 656/10000 [02:06<29:39,  5.25it/s]Calcul chi2(Ωm, σ8):   7%|▋         | 672/10000 [02:09<29:46,  5.22it/s]Calcul chi2(Ωm, σ8):   7%|▋         | 688/10000 [02:12<29:04,  5.34it/s]Calcul chi2(Ωm, σ8):   7%|▋         | 704/10000 [02:15<28:35,  5.42it/s]Calcul chi2(Ωm, σ8):   7%|▋         | 720/10000 [02:18<29:48,  5.19it/s]Calcul chi2(Ωm, σ8):   7%|▋         | 736/10000 [02:21<30:20,  5.09it/s]Calcul chi2(Ωm, σ8):   8%|▊         | 752/10000 [02:24<29:39,  5.20it/s]Calcul chi2(Ωm, σ8):   8%|▊         | 768/10000 [02:27<29:08,  5.28it/s]Calcul chi2(Ωm, σ8):   8%|▊         | 784/10000 [02:30<28:48,  5.33it/s]Calcul chi2(Ωm, σ8):   8%|▊         | 800/10000 [02:33<28:34,  5.37it/s]Calcul chi2(Ωm, σ8):   8%|▊         | 816/10000 [02:37<29:59,  5.10it/s]Calcul chi2(Ωm, σ8):   8%|▊         | 832/10000 [02:40<30:12,  5.06it/s]Calcul chi2(Ωm, σ8):   8%|▊         | 848/10000 [02:43<29:28,  5.18it/s]Calcul chi2(Ωm, σ8):   9%|▊         | 864/10000 [02:46<28:49,  5.28it/s]Calcul chi2(Ωm, σ8):   9%|▉         | 880/10000 [02:49<28:15,  5.38it/s]Exception ignored in: <function ResourceTracker.__del__ at 0x7fd3a2c98540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7f60eaec0540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7f4d8d83c540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7ff1db3e4540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7fc9b2ca4540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7f7478d4c540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7f23a2dd8540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7fa6c1e70540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7f160a660540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7fe2cda5c540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7efe5419c540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7fd28de94540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7f8957954540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7fe4aea9c540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7fd9d9f24540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x7f1a0b418540>
+Traceback (most recent call last):
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/home/rbekaddour/ls/envs/cosmo/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+/home/rbekaddour/ls/envs/cosmo/lib/python3.13/site-packages/joblib/externals/loky/backend/resource_tracker.py:314: UserWarning: resource_tracker: There appear to be 22 leaked semlock objects to clean up at shutdown
+  warnings.warn(
+/home/rbekaddour/ls/envs/cosmo/lib/python3.13/site-packages/joblib/externals/loky/backend/resource_tracker.py:314: UserWarning: resource_tracker: There appear to be 2 leaked folder objects to clean up at shutdown
+  warnings.warn(
