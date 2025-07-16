@@ -156,37 +156,37 @@ def Chi2(H0,omega_m0,M,sigma8_0,w):
 #########################################################################################################
 
 
-def compute_chi2_om_sig8(om, sig8, h0, m, w_min, w_max, Chi2):
+def compute_chi2_om_sig8(om, sig8, h0, m, w_min, w_max,H0_min,H0_max,Chi2):
     minimizer = Minuit(Chi2, H0=h0, omega_m0=om, M=m, sigma8_0=sig8, w=-1)
     minimizer.fixed["omega_m0"] = True
     minimizer.fixed["sigma8_0"] = True
-    minimizer.fixed["H0"] = True
+    minimizer.fixed["H0"] = (H0_min,H0_max)
     minimizer.fixed["M"] = True
     minimizer.limits["w"] = (w_min, w_max)
     minimizer.migrad()
     return minimizer.fval
 
-def compute_chi2_om_w(om, w, h0, m, sig8_min, sig8_max, Chi2):
+def compute_chi2_om_w(om, w, h0, m, sig8_min, sig8_max,H0_min,H0_max, Chi2):
     minimizer = Minuit(Chi2, H0=h0, omega_m0=om, M=m, sigma8_0=0.7, w=w)
     minimizer.fixed["omega_m0"] = True
     minimizer.fixed["w"] = True
-    minimizer.fixed["H0"] = True
+    minimizer.fixed["H0"] = (H0_min,H0_max)
     minimizer.fixed["M"] = True
     minimizer.limits["sigma8_0"] = (sig8_min, sig8_max)
     minimizer.migrad()
     return minimizer.fval
 
-def compute_chi2_sig8_w(sig8, w, h0, m, om_min, om_max, Chi2):
+def compute_chi2_sig8_w(sig8, w, h0, m, om_min, om_max,H0_min,H0_max, Chi2):
     minimizer = Minuit(Chi2, H0=h0, omega_m0=0.3, M=m, sigma8_0=sig8, w=w)
     minimizer.fixed["sigma8_0"] = True
     minimizer.fixed["w"] = True
-    minimizer.fixed["H0"] = True
+    minimizer.fixed["H0"] = (H0_min,H0_max)
     minimizer.fixed["M"] = True
     minimizer.limits["omega_m0"] = (om_min, om_max)
     minimizer.migrad()
     return minimizer.fval
 
-def compute_grid_Chi2(om_vals, sig8_vals, w_vals, w_min, w_max, sig8_min, sig8_max, om_min, om_max):
+def compute_grid_Chi2(om_vals, sig8_vals, w_vals, w_min, w_max, sig8_min, sig8_max, om_min, om_max,H0_min,H0_max):
     h0 = 73.4
     m = -19.25
 
@@ -199,19 +199,19 @@ def compute_grid_Chi2(om_vals, sig8_vals, w_vals, w_min, w_max, sig8_min, sig8_m
 
     # Affichage des barres de progression
     chi2_om_sig8 = Parallel(n_jobs=-1)(
-        delayed(compute_chi2_om_sig8)(om, sig8, h0, m, w_min, w_max, Chi2)
+        delayed(compute_chi2_om_sig8)(om, sig8, h0, m, w_min, w_max,H0_min,H0_max, Chi2)
         for om, sig8 in tqdm([(o, s) for o in om_vals for s in sig8_vals], desc="Calcul chi2(Ωm, σ8)", total=total1)
     )
     chi2_grid_om_sig8 = np.array(chi2_om_sig8).reshape(len(om_vals), len(sig8_vals))
 
     chi2_om_w = Parallel(n_jobs=-1)(
-        delayed(compute_chi2_om_w)(om, w, h0, m, sig8_min, sig8_max, Chi2)
+        delayed(compute_chi2_om_w)(om, w, h0, m, sig8_min, sig8_max,H0_min,H0_max,Chi2)
         for om, w in tqdm([(o, w) for o in om_vals for w in w_vals], desc="Calcul chi2(Ωm, w)", total=total2)
     )
     chi2_grid_om_w = np.array(chi2_om_w).reshape(len(om_vals), len(w_vals))
 
     chi2_sig8_w = Parallel(n_jobs=-1)(
-        delayed(compute_chi2_sig8_w)(sig8, w, h0, m, om_min, om_max, Chi2)
+        delayed(compute_chi2_sig8_w)(sig8, w, h0, m, om_min, om_max,H0_min,H0_max,Chi2)
         for sig8, w in tqdm([(s, w) for s in sig8_vals for w in w_vals], desc="Calcul chi2(σ8, w)", total=total3)
     )
     chi2_grid_sig8_w = np.array(chi2_sig8_w).reshape(len(sig8_vals), len(w_vals))
