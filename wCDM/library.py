@@ -82,7 +82,7 @@ fsig8 = np.array((df['fsig8'].copy()).tolist())
 fsig8_err_minus = np.array((df['fsig8_err_minus'].copy()).tolist())
 fsig8_err_plus = np.array((df['fsig8_err_plus'].copy()).tolist())
 
-df_desi = pd.read_csv("desi_data.dat", sep=";")
+df_desi = pd.read_csv("wCDM/desi_data.dat", sep=";")
 
 z_DESI = np.array((df_desi['z_eff'].copy()).tolist())
 Dm_rd = np.array((df_desi['D_M/r_d'].copy()).tolist())      
@@ -150,14 +150,15 @@ def trans_Da_rd(z,x):
 
 def model_Da_rd(z,H0,w,omega_m0,rd):
     I,err = quad(f,0,z,args = (H0,omega_m0,w))
-    return (c*I)/(1+z)*rd
+    return (c*I)/((1+z)*rd)
 
 def Chi2DESI(H0,w,omega_m0,rd):
     Da_rd = trans_Da_rd(z_DESI,Dm_rd)
     Da_rd_err = trans_Da_rd(z_DESI,Dm_rd_err)
-    
-    chi2 = ((model_Da_rd(z_DESI,H0,w,omega_m0,rd)-Da_rd)/Da_rd_err)**2
-    return np.sum(chi2)
+    chi2 = 0
+    for i in range(len(z_DESI)):
+        chi2 += ((model_Da_rd(z_DESI[i],H0,w,omega_m0,rd)-Da_rd[i])/Da_rd_err[i])**2
+    return chi2
     
 
 def Chi2(H0,omega_m0,M,sigma8_0,w,rd):

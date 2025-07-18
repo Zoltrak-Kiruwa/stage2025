@@ -20,7 +20,7 @@ w_max = -1/3
 H0_min = 60
 H0_max = 100
 rd_min = 130
-rd_max = 160
+rd_max = 200
 
 minimizer = Minuit(library.Chi2,H0 = 73.4,omega_m0 = 0.3,M=-19.25,sigma8_0 = 0.7 ,w = -1,rd=140)
 minimizer.limits["omega_m0"] = (om_min,om_max)

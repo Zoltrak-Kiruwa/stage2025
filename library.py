@@ -83,7 +83,7 @@ fsig8_err_plus = np.array((df['fsig8_err_plus'].copy()).tolist())
 
 
 # Importation des données
-df = pd.read_csv("fsigma8_data.dat", sep=";")
+df = pd.read_csv("wCDM/fsigma8_data.dat", sep=";")
 z_data = np.array(df['z'].tolist())
 fsig8 = np.array(df['fsig8'].tolist())
 fsig8_err_minus = np.array(df['fsig8_err_minus'].tolist())
