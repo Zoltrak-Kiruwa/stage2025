@@ -82,8 +82,10 @@ fsig8 = np.array((df['fsig8'].copy()).tolist())
 fsig8_err_minus = np.array((df['fsig8_err_minus'].copy()).tolist())
 fsig8_err_plus = np.array((df['fsig8_err_plus'].copy()).tolist())
 
-
-
+df_desi = pd.read_csv("DESI_data.dat", sep=";")
+z_DESI = np.array((df['z_eff'].copy()).tolist())
+Dm_rd = np.array((df['D_M/r_d'].copy()).tolist())      
+Dm_rd_err = np.array((df['D_M/r_d_err'].copy()).tolist())      
 
 def gamma(w,omega_m0,z):
     return   (3*(w-1))/(6*w-5) #- ((15/2057)*np.log(omega_m(z,omega_m0,w)))
@@ -142,10 +144,25 @@ def Chi2Panth(H0,omega_m,w,M):
     
     return np.dot(np.dot(Cov1,diffMu),diffMu)
 
-def Chi2(H0,omega_m0,M,sigma8_0,w):
+def trans_Da_rd(z,x):
+    return (1/(1+z))*(x)
+
+def Da_rd(z,H0,w,omega_m0,rd):
+    I,err = quad(f,0,z,args = (H0,omega_m0,w))
+    return (c*I)/(1+z)*rd
+
+def Chi2DESI(H0,w,omega_m0,rd):
+    Da_rd = trans_Da_rd(z_DESI,Dm_rd)
+    Da_rd_err = trans_Da_rd(z_DESI,Dm_rd_err)
     
+    chi2 = ((Da_rd(z_DESI,H0,w,omega_m0,rd)-Da_rd)/Da_rd_err)**2
+    return np.sum(chi2)
+    
+
+def Chi2(H0,omega_m0,M,sigma8_0,w,rd):
+        
     #start = time.time()
-    res = Chi2RSD(omega_m0,sigma8_0,w)+Chi2Panth(H0,omega_m0,w,M)
+    res = Chi2RSD(omega_m0,sigma8_0,w)+Chi2Panth(H0,omega_m0,w,M)+Chi2DESI(H0,w,omega_m0,rd)
     #end = time.time()
     #print("t = ",end-start,"s")
     #print("H0 = ",H0,"omega_m = ",omega_m0,"sig8_0",sigma8_0,"M =",M,"w = ",w)
@@ -156,8 +173,8 @@ def Chi2(H0,omega_m0,M,sigma8_0,w):
 #########################################################################################################
 
 
-def compute_chi2_om_sig8(om, sig8, h0, m, w_min, w_max,H0_min,H0_max,Chi2):
-    minimizer = Minuit(Chi2, H0=h0, omega_m0=om, M=m, sigma8_0=sig8, w=-1)
+def compute_chi2_om_sig8(om,sig8,h0,m,rd,w_min, w_max,H0_min,H0_max,rd_min,rd_max,Chi2):
+    minimizer = Minuit(Chi2, H0=h0, omega_m0=om, M=m,sigma8_0=sig8, w=-1,rd=rd)
     minimizer.fixed["omega_m0"] = True
     minimizer.fixed["sigma8_0"] = True
     minimizer.limits["H0"] = (H0_min,H0_max)
@@ -166,8 +183,8 @@ def compute_chi2_om_sig8(om, sig8, h0, m, w_min, w_max,H0_min,H0_max,Chi2):
     minimizer.migrad()
     return minimizer.fval
 
-def compute_chi2_om_w(om, w, h0, m, sig8_min, sig8_max,H0_min,H0_max, Chi2):
-    minimizer = Minuit(Chi2, H0=h0, omega_m0=om, M=m, sigma8_0=0.7, w=w)
+def compute_chi2_om_w(om, w, h0, m,rd,sig8_min, sig8_max,H0_min,H0_max,rd_min,rd_max,Chi2):
+    minimizer = Minuit(Chi2, H0=h0, omega_m0=om, M=m, sigma8_0=0.7, w=w,rd=rd)
     minimizer.fixed["omega_m0"] = True
     minimizer.fixed["w"] = True
     minimizer.limits["H0"] = (H0_min,H0_max)
@@ -176,8 +193,8 @@ def compute_chi2_om_w(om, w, h0, m, sig8_min, sig8_max,H0_min,H0_max, Chi2):
     minimizer.migrad()
     return minimizer.fval
 
-def compute_chi2_sig8_w(sig8, w, h0, m, om_min, om_max,H0_min,H0_max, Chi2):
-    minimizer = Minuit(Chi2, H0=h0, omega_m0=0.3, M=m, sigma8_0=sig8, w=w)
+def compute_chi2_sig8_w(sig8, w, h0, m, om_min,rd,om_max,H0_min,H0_max,rd_min,rd_max,Chi2):
+    minimizer = Minuit(Chi2, H0=h0, omega_m0=0.3, M=m, sigma8_0=sig8, w=w,rd=rd)
     minimizer.fixed["sigma8_0"] = True
     minimizer.fixed["w"] = True
     minimizer.limits["H0"] = (H0_min,H0_max)
@@ -186,9 +203,10 @@ def compute_chi2_sig8_w(sig8, w, h0, m, om_min, om_max,H0_min,H0_max, Chi2):
     minimizer.migrad()
     return minimizer.fval
 
-def compute_grid_Chi2(om_vals, sig8_vals, w_vals, w_min, w_max, sig8_min, sig8_max, om_min, om_max,H0_min,H0_max):
+def compute_grid_Chi2(om_vals,sig8_vals,w_vals,w_min,w_max,sig8_min,sig8_max,om_min,om_max,H0_min,H0_max,rd_min,rd_max):
     h0 = 73.4
     m = -19.25
+    rd = 140
 
     print(f"🧠 Cœurs utilisés : {os.cpu_count()}")
 
@@ -199,19 +217,19 @@ def compute_grid_Chi2(om_vals, sig8_vals, w_vals, w_min, w_max, sig8_min, sig8_m
 
     # Affichage des barres de progression
     chi2_om_sig8 = Parallel(n_jobs=-1)(
-        delayed(compute_chi2_om_sig8)(om, sig8, h0, m, w_min, w_max,H0_min,H0_max, Chi2)
+        delayed(compute_chi2_om_sig8)(om, sig8, h0, m,rd,w_min, w_max,H0_min,H0_max,rd_min,rd_max,Chi2)
         for om, sig8 in tqdm([(o, s) for o in om_vals for s in sig8_vals], desc="Calcul chi2(Ωm, σ8)", total=total1)
     )
     chi2_grid_om_sig8 = np.array(chi2_om_sig8).reshape(len(om_vals), len(sig8_vals))
 
     chi2_om_w = Parallel(n_jobs=-1)(
-        delayed(compute_chi2_om_w)(om, w, h0, m, sig8_min, sig8_max,H0_min,H0_max,Chi2)
+        delayed(compute_chi2_om_w)(om, w, h0, m,rd,sig8_min, sig8_max,H0_min,H0_max,rd_min,rd_max,Chi2)
         for om, w in tqdm([(o, w) for o in om_vals for w in w_vals], desc="Calcul chi2(Ωm, w)", total=total2)
     )
     chi2_grid_om_w = np.array(chi2_om_w).reshape(len(om_vals), len(w_vals))
 
     chi2_sig8_w = Parallel(n_jobs=-1)(
-        delayed(compute_chi2_sig8_w)(sig8, w, h0, m, om_min, om_max,H0_min,H0_max,Chi2)
+        delayed(compute_chi2_sig8_w)(sig8, w, h0, m, om_min,rd,om_max,H0_min,H0_max,rd_min,rd_max,Chi2)
         for sig8, w in tqdm([(s, w) for s in sig8_vals for w in w_vals], desc="Calcul chi2(σ8, w)", total=total3)
     )
     chi2_grid_sig8_w = np.array(chi2_sig8_w).reshape(len(sig8_vals), len(w_vals))
