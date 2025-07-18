@@ -180,6 +180,7 @@ def compute_chi2_om_sig8(om,sig8,h0,m,rd,w_min, w_max,H0_min,H0_max,rd_min,rd_ma
     minimizer.fixed["omega_m0"] = True
     minimizer.fixed["sigma8_0"] = True
     minimizer.limits["H0"] = (H0_min,H0_max)
+    minimizer.limits["rd"] = (rd_min,rd_max)
     minimizer.fixed["M"] = True
     minimizer.limits["w"] = (w_min, w_max)
     minimizer.migrad()
@@ -190,6 +191,7 @@ def compute_chi2_om_w(om, w, h0, m,rd,sig8_min, sig8_max,H0_min,H0_max,rd_min,rd
     minimizer.fixed["omega_m0"] = True
     minimizer.fixed["w"] = True
     minimizer.limits["H0"] = (H0_min,H0_max)
+    minimizer.limits["rd"] = (rd_min,rd_max)
     minimizer.fixed["M"] = True
     minimizer.limits["sigma8_0"] = (sig8_min, sig8_max)
     minimizer.migrad()
@@ -200,6 +202,7 @@ def compute_chi2_sig8_w(sig8, w, h0, m, om_min,rd,om_max,H0_min,H0_max,rd_min,rd
     minimizer.fixed["sigma8_0"] = True
     minimizer.fixed["w"] = True
     minimizer.limits["H0"] = (H0_min,H0_max)
+    minimizer.limits["rd"] = (rd_min,rd_max)
     minimizer.fixed["M"] = True
     minimizer.limits["omega_m0"] = (om_min, om_max)
     minimizer.migrad()
