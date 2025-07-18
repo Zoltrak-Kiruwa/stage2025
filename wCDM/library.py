@@ -82,10 +82,11 @@ fsig8 = np.array((df['fsig8'].copy()).tolist())
 fsig8_err_minus = np.array((df['fsig8_err_minus'].copy()).tolist())
 fsig8_err_plus = np.array((df['fsig8_err_plus'].copy()).tolist())
 
-df_desi = pd.read_csv("DESI_data.dat", sep=";")
-z_DESI = np.array((df['z_eff'].copy()).tolist())
-Dm_rd = np.array((df['D_M/r_d'].copy()).tolist())      
-Dm_rd_err = np.array((df['D_M/r_d_err'].copy()).tolist())      
+df_desi = pd.read_csv("desi_data.dat", sep=";")
+
+z_DESI = np.array((df_desi['z_eff'].copy()).tolist())
+Dm_rd = np.array((df_desi['D_M/r_d'].copy()).tolist())      
+Dm_rd_err = np.array((df_desi['D_M/r_d_err'].copy()).tolist())      
 
 def gamma(w,omega_m0,z):
     return   (3*(w-1))/(6*w-5) #- ((15/2057)*np.log(omega_m(z,omega_m0,w)))
