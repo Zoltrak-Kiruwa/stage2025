@@ -148,7 +148,7 @@ def Chi2Panth(H0,omega_m,w,M):
 def trans_Da_rd(z,x):
     return (1/(1+z))*(x)
 
-def Da_rd(z,H0,w,omega_m0,rd):
+def model_Da_rd(z,H0,w,omega_m0,rd):
     I,err = quad(f,0,z,args = (H0,omega_m0,w))
     return (c*I)/(1+z)*rd
 
@@ -156,7 +156,7 @@ def Chi2DESI(H0,w,omega_m0,rd):
     Da_rd = trans_Da_rd(z_DESI,Dm_rd)
     Da_rd_err = trans_Da_rd(z_DESI,Dm_rd_err)
     
-    chi2 = ((Da_rd(z_DESI,H0,w,omega_m0,rd)-Da_rd)/Da_rd_err)**2
+    chi2 = ((model_Da_rd(z_DESI,H0,w,omega_m0,rd)-Da_rd)/Da_rd_err)**2
     return np.sum(chi2)
     
 
