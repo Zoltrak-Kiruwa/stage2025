@@ -187,7 +187,7 @@ def Chi2(H0,omega_m0,M,sigma8_0,w,rd):
     res = Chi2RSD(omega_m0,sigma8_0,w)+Chi2Panth(H0,omega_m0,w,M)+Chi2DESI(H0,w,omega_m0,rd)
     #end = time.time()
     #print("t = ",end-start,"s")
-    #print("H0 = ",H0,"omega_m = ",omega_m0,"sig8_0",sigma8_0,"M =",M,"w = ",w)
+    print("H0 = ",H0,"omega_m = ",omega_m0,"sig8_0",sigma8_0,"M =",M,"w = ",w,"rd =",rd)
     return res
 
 
