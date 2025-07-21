@@ -280,6 +280,3 @@ def make_list(name):                            #cette fonction fabrique un tabl
             tab.append(float(element))
         
     return tab
-
-
-
