@@ -133,37 +133,20 @@ def f(z,H0,omega_m,w):
     return 1/a
 
 def Mu_torch(z, H0, omega_m, w):
-    # Define the function to integrate using PyTorch
-    def f_torch(z_torch):
-        return 1 / (H0 * torch.sqrt(omega_m * (1 + z_torch)**3 + (1 - omega_m) * (1 + z_torch)**(3 * (1 + w))))
-
-    # Create a tensor for integration points
-    z_tensor = torch.linspace(0, z, steps=100).cuda()
-
-    # Compute the integral using the trapezoidal rule
-    integral = torch.trapz(f_torch(z_tensor), z_tensor)
-
+    z_tensor = torch.linspace(0, z, steps=100, device='cuda')
+    integrand = 1 / (H0 * torch.sqrt(omega_m * (1 + z_tensor)**3 + (1 - omega_m) * (1 + z_tensor)**(3 * (1 + w))))
+    integral = torch.trapz(integrand, z_tensor)
     return 5 * torch.log10((1 + z) * c * integral * (10**5))
 
 def Chi2Panth(H0, omega_m, w, M):
-    diffMu = torch.tensor([], dtype=torch.float32, device=torch.device('cuda'))
+    # Calculer diffMu en utilisant des opérations vectorisées
+    mu_vals = torch.stack([Mu_torch(Zhd_tensor[i], H0, omega_m, w) for i in range(len(Zhd_tensor))])
+    diffMu = torch.where(IS_calib_tensor == 0, mu_vals - (mb_corr_tensor - M), (mb_corr_tensor - M) - ceph_dist_tensor)
 
-    for i in range(len(Zhd_tensor)):
-        if IS_calib_tensor[i] == 0:
-            mu_val = Mu_torch(Zhd_tensor[i], H0, omega_m, w)
-            diff = mu_val - (mb_corr_tensor[i] - M)
-        else:
-            diff = (mb_corr_tensor[i] - M) - ceph_dist_tensor[i]
-
-        diffMu = torch.cat((diffMu, diff.unsqueeze(0)))
-
-    # Compute the chi-squared value using matrix multiplication on GPU
+    # Calculer la valeur chi-carré
     chi2 = torch.dot(diffMu, torch.matmul(Cov1_tensor, diffMu))
 
-    # Convert the result to a NumPy array
-    chi2_np = chi2.cpu().numpy()
-
-    return chi2_np
+    return chi2.cpu().numpy()
 
 def trans_Da_rd(z,x):
     return (1/(1+z))*(x)
