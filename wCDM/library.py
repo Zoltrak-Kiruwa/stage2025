@@ -15,6 +15,7 @@ import math
 from joblib import Parallel, delayed
 import os
 from tqdm import tqdm
+import torch
 
 def make_ds(name,position):                            #cette fonction fabrique une liste rempli par les données de la colonne de données voulue
     
@@ -73,6 +74,13 @@ def cov(List, n):
 
 Cov = cov(List, n)
 Cov1 = np.linalg.inv(Cov)
+#conversion en tenseur
+
+Zhd_tensor = torch.tensor(Zhd, dtype=torch.float32).cuda()
+IS_calib_tensor = torch.tensor(IS_calib, dtype=torch.float32).cuda()
+mb_corr_tensor = torch.tensor(mb_corr, dtype=torch.float32).cuda()
+ceph_dist_tensor = torch.tensor(ceph_dist, dtype=torch.float32).cuda()
+Cov1_tensor = torch.tensor(Cov1, dtype=torch.float32).cuda()
 
 #importation des donnés RSD
 df = pd.read_csv("fsigma8_data.dat", sep=";")
@@ -124,26 +132,35 @@ def f(z,H0,omega_m,w):
         print("a = ",0)
     return 1/a
 
-def Mu(z,H0,omega_m,w):
-    
-    #print(type(X))
+def Mu_torch(z, H0, omega_m, w):
+    # Define the function to integrate using PyTorch
+    def f_torch(z_torch):
+        return 1 / (H0 * torch.sqrt(omega_m * (1 + z_torch)**3 + (1 - omega_m) * (1 + z_torch)**(3 * (1 + w))))
 
-    # Calculer l'intégrale numérique de la fonction f(x) en utilisant la méthode des trapèzes
-    I,err = quad(f,0,z,args = (H0,omega_m,w))
-    return 5*np.log10(((1+z)*c*I*(10**5)))
+    # Create a tensor for integration points
+    z_tensor = torch.linspace(0, z, steps=100).cuda()
 
-def Chi2Panth(H0,omega_m,w,M):
-    
-    chi2 = 0
-    diffMu = np.array([])
+    # Compute the integral using the trapezoidal rule
+    integral = torch.trapz(f_torch(z_tensor), z_tensor)
 
-    for i in range(0,len(Zhd)):
-        if IS_calib[i] == 0:
-            diffMu = np.append(diffMu,Mu(Zhd[i],H0,omega_m,w)-(mb_corr[i]-M))
+    return 5 * torch.log10((1 + z) * c * integral * (10**5))
+
+def Chi2Panth(H0, omega_m, w, M):
+    diffMu = torch.tensor([], dtype=torch.float32).cuda()
+
+    for i in range(len(Zhd_tensor)):
+        if IS_calib_tensor[i] == 0:
+            mu_val = Mu_torch(Zhd_tensor[i], H0, omega_m, w)
+            diff = mu_val - (mb_corr_tensor[i] - M)
+            diffMu = torch.cat((diffMu, diff.unsqueeze(0)))
         else:
-            diffMu =  np.append(diffMu,(mb_corr[i]-M)-ceph_dist[i])
-    
-    return np.dot(np.dot(Cov1,diffMu),diffMu)
+            diff = (mb_corr_tensor[i] - M) - ceph_dist_tensor[i]
+            diffMu = torch.cat((diffMu, diff.unsqueeze(0)))
+
+    # Compute the chi-squared value
+    chi2 = torch.dot(torch.matmul(Cov1_tensor, diffMu), diffMu)
+
+    return chi2.item()
 
 def trans_Da_rd(z,x):
     return (1/(1+z))*(x)
