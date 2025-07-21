@@ -82,7 +82,7 @@ fsig8 = np.array((df['fsig8'].copy()).tolist())
 fsig8_err_minus = np.array((df['fsig8_err_minus'].copy()).tolist())
 fsig8_err_plus = np.array((df['fsig8_err_plus'].copy()).tolist())
 
-df_desi = pd.read_csv("wCDM/desi_data.dat", sep=";")
+df_desi = pd.read_csv("desi_data.dat", sep=";")
 
 z_DESI = np.array((df_desi['z_eff'].copy()).tolist())
 Dm_rd = np.array((df_desi['D_M/r_d'].copy()).tolist())      
