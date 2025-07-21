@@ -74,6 +74,28 @@ def cov(List, n):
 Cov = cov(List, n)
 Cov1 = np.linalg.inv(Cov)
 
+def Chi2Panth(H0, omega_m, w, M):
+    # Calcul des indices pour les deux cas
+    mask_calib = IS_calib == 1
+    mask_non_calib = ~mask_calib
+
+    # Préparer les vecteurs
+    diffMu = np.zeros_like(mb_corr)
+
+    # Cas non calibrés : on utilise le modèle Mu
+    z_non_calib = Zhd[mask_non_calib]
+    mb_non_calib = mb_corr[mask_non_calib]
+    diffMu[mask_non_calib] = Mu(z_non_calib, H0, omega_m, w) - (mb_non_calib - M)
+
+    # Cas calibrés : on compare aux distances céphéides
+    mb_calib = mb_corr[mask_calib]
+    ceph = ceph_dist[mask_calib]
+    diffMu[mask_calib] = (mb_calib - M) - ceph
+
+    # Produit matriciel pour le chi2
+    return np.dot(diffMu, np.dot(Cov1, diffMu))
+
+
 #importation des donnés RSD
 df = pd.read_csv("fsigma8_data.dat", sep=";")
 
@@ -167,7 +189,7 @@ def Chi2(H0,omega_m0,M,sigma8_0,w,rd):
     res = Chi2RSD(omega_m0,sigma8_0,w)+Chi2Panth(H0,omega_m0,w,M)+Chi2DESI(H0,w,omega_m0,rd)
     #end = time.time()
     #print("t = ",end-start,"s")
-    print("H0 = ",H0,"omega_m = ",omega_m0,"sig8_0",sigma8_0,"M =",M,"w = ",w)
+    #print("H0 = ",H0,"omega_m = ",omega_m0,"sig8_0",sigma8_0,"M =",M,"w = ",w)
     return res
 
 
