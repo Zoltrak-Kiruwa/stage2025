@@ -73,13 +73,6 @@ def cov(List, n):
 
 Cov = cov(List, n)
 Cov1 = np.linalg.inv(Cov)
-#conversion en tenseur
-
-Zhd_tensor = torch.tensor(Zhd, dtype=torch.float32).cuda()
-IS_calib_tensor = torch.tensor(IS_calib, dtype=torch.float32).cuda()
-mb_corr_tensor = torch.tensor(mb_corr, dtype=torch.float32).cuda()
-ceph_dist_tensor = torch.tensor(ceph_dist, dtype=torch.float32).cuda()
-Cov1_tensor = torch.tensor(Cov1, dtype=torch.float32).cuda()
 
 #importation des donnés RSD
 df = pd.read_csv("fsigma8_data.dat", sep=";")
